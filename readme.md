@@ -1,0 +1,1 @@
+So as you can see I didnt finish this project. I have a hard time asking for help for some reason and I really need to get over it. I started to figure out what to do on the seccond to last day, and I couldnt finish on time. If I can update this over time to improve the grade that would be nice, if not than it is what it is.
