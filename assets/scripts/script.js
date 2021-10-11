@@ -20,7 +20,7 @@ var h2El = document.createElement("h2")
 var input = document.createElement("input")
 
 var index = 0
-var seconds = 10
+var seconds = 0
 
 
 
@@ -80,8 +80,9 @@ function freshState() {
 
     startResetBtn.textContent = "Start";
     startResetBtn.setAttribute("data-function", "start")
-    contentDiv.appendChild(h1El)
+
     questionBox.appendChild(h1El)
+    contentDiv.appendChild(questionBox)
     h1El.textContent = "This is a thing I guess, get ready to start."
 
 }
@@ -101,18 +102,18 @@ function freshState() {
 
 
 function timer() {
-    var seconds = 120
+    seconds = 120
     timerEl.innerHTML = "time left: " + seconds
- var countdown = setInterval(function timerUpdate() {
-    seconds--
-    timerEl.innerHTML = "time left: " + seconds
-    console.log(seconds)
-    if (seconds <= 0) {
-        timerEl.innerHTML = "Times up!"
-        console.log("game end")
-        clearInterval(countdown)
-    }
-}, 1000)
+    var countdown = setInterval(function timerUpdate() {
+        seconds--
+        timerEl.innerHTML = "time left: " + seconds
+        console.log(seconds)
+        if (seconds <= 0) {
+            timerEl.innerHTML = "Times up!"
+            console.log("game end")
+            clearInterval(countdown)
+        }
+    }, 1000)
 }
 
 
@@ -142,14 +143,13 @@ function chooseAnswer(event) {
     var buttonType = element.getAttribute("data-function");
     var answerButtons = document.querySelectorAll("[data-function='answer']");
     if (buttonType === "answer") {
-        //-1 because of developer choice with how the questions are set up.
         if (answerID == correctAnsArr[index] - 1) {
             element.style.backgroundColor = "#8FBC8F";
             disableButtons(answerButtons);
 
         }
         else {
-            timeLeft -= 10;
+            seconds -= 30;
             element.style.backgroundColor = "#8B0000";
             disableButtons(answerButtons);
         }
@@ -157,13 +157,33 @@ function chooseAnswer(event) {
     }
 }
 
+function disableButtons(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        arr[i].setAttribute("disabled", true);
+    }
+}
+
+function waitTime(x) {
+    var waitTime = x;
+    var waitTimer = setInterval(function () {
+
+        if (waitTime <= 0) {
+            clearInterval(waitTimer);
+            index++;
+            quizActual();
+        }
+        waitTime--;
+    }, 500);
+
+}
 
 
 
 function quizActual() {
     clearContent();
     if (index < questionsArr.length) {
-        contentDiv.appendChild(h1El);
+        questionBox.appendChild(h1El);
+        contentDiv.appendChild(questionBox)
         h1El.textContent = questionsArr[index];
 
         //create buttons with all possible answers in the answer array for the specific question
@@ -190,7 +210,46 @@ function quizActual() {
 }
 
 
+function saveScore() {
+    var scoreInfo = {
+        initials: input.value,
+        score: gameScore
+    };
+    highScores.push(scoreInfo)
 
+    //ascending sort function 
+    highScores.sort(
+        function (a, b) {
+            return b.score - a.score
+        });
+
+    while (highScores.length > 8) {
+        highScores.pop();
+    }
+
+    localStorage.setItem("scoreInfo", JSON.stringify(highScores));
+    input.value = "";
+    showHighScore();
+}
+
+
+
+function endGame() {
+    gameScore = seconds;
+    resetTimer();
+    var btnEl = document.createElement("button");
+
+    btnEl.textContent = "Save"
+    h1El.textContent = "Game has ended. Please enter your initials below."
+    input.type = "text";
+    input.maxLength = "4";
+
+    contentDiv.appendChild(h1El);
+    contentDiv.appendChild(input);
+    contentDiv.appendChild(btnEl);
+
+    btnEl.addEventListener("click", saveScore)
+}
 
 
 
