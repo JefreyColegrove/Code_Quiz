@@ -191,10 +191,10 @@ function quizActual() {
             var ansEl = document.createElement("div");
             ansEl.classList.add("card")
             contentDiv.appendChild(ansEl);
-            var select = document.createElement("button")
-            select.textContent = "select"
+//             var select = document.createElement("button")
+//             select.textContent = "select"
             ansEl.textContent = answersArr[index][i];
-            ansEl.appendChild(select)
+//             ansEl.appendChild(select)
             ansEl.setAttribute("data-answer-index", i);
             ansEl.setAttribute("data-function", "answer")
 
